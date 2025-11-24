@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rajuk College Science Club | RCSC</title>
+    <title>Upcoming Events | RCSC</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -25,6 +25,8 @@
                         'void-black': '#050505',
                         'deep-space': '#0a0a12',
                         'gold-accent': '#ffd700',
+                        'neon-green': '#00ff9d',
+                        'alert-red': '#ff2a2a',
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -64,7 +66,7 @@
         .cursor-dot {
             width: 8px;
             height: 8px;
-            background-color: #00f3ff;
+            background: #00f3ff;
             box-shadow: 0 0 10px #00f3ff;
         }
 
@@ -72,20 +74,14 @@
             width: 40px;
             height: 40px;
             border: 2px solid rgba(0, 243, 255, 0.3);
-            transition: width 0.2s, height 0.2s, border-color 0.2s, background-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         body.hovering .cursor-ring {
             width: 60px;
             height: 60px;
-            background-color: rgba(188, 19, 254, 0.05);
+            background: rgba(188, 19, 254, 0.05);
             border-color: #bc13fe;
-        }
-
-        body.clicking .cursor-ring {
-            width: 30px;
-            height: 30px;
-            background-color: rgba(255, 255, 255, 0.8);
         }
 
         @media (max-width: 768px) {
@@ -111,16 +107,12 @@
             transform: translateY(0);
         }
 
-        /* Text Gradient & Glow */
-        .text-glow {
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-
-        /* Sci-Fi Border Utility */
+        /* Sci-Fi Box Utility */
         .sci-fi-box {
             position: relative;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
 
         .sci-fi-box::before {
@@ -130,8 +122,8 @@
             left: -1px;
             width: 20px;
             height: 20px;
-            border-top: 2px solid #00f3ff;
-            border-left: 2px solid #00f3ff;
+            border-top: 2px solid var(--accent-color, #00f3ff);
+            border-left: 2px solid var(--accent-color, #00f3ff);
         }
 
         .sci-fi-box::after {
@@ -141,11 +133,11 @@
             right: -1px;
             width: 20px;
             height: 20px;
-            border-bottom: 2px solid #bc13fe;
-            border-right: 2px solid #bc13fe;
+            border-bottom: 2px solid var(--accent-color, #00f3ff);
+            border-right: 2px solid var(--accent-color, #00f3ff);
         }
 
-        /* Background Canvas */
+        /* Canvas Background */
         #magnetic-field {
             position: fixed;
             top: 0;
@@ -212,236 +204,207 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="relative flex justify-center items-center pt-20 min-h-screen">
-        <div class="z-10 mx-auto px-4 max-w-5xl text-center reveal active">
-            <div
-                class="inline-flex items-center gap-2 bg-cyber-purple/10 mb-6 px-3 py-1 border border-cyber-purple/30 rounded-full text-cyber-purple animate-pulse-fast">
-                <span class="relative flex w-2 h-2">
-                    <span
-                        class="inline-flex absolute bg-cyber-purple opacity-75 rounded-full w-full h-full animate-ping"></span>
-                    <span class="inline-flex relative bg-cyber-purple rounded-full w-2 h-2"></span>
-                </span>
-                <span class="font-sci text-xs tracking-widest">REGISTRATION LIVE NOW!</span>
-            </div>
-
-            <h1 class="bg-clip-text bg-gradient-to-r from-white via-cyber-blue to-white mb-4 font-sci font-black text-transparent text-5xl md:text-7xl lg:text-8xl glitch"
-                data-text="RAJUK COLLEGE SCIENCE CLUB">
-                RAJUK COLLEGE<br>SCIENCE CLUB
+    <!-- Hero / Header -->
+    <section class="relative px-4 pt-32 pb-16 overflow-hidden text-center">
+        <div class="z-10 relative mx-auto max-w-5xl reveal active">
+            <h1 class="mb-6 font-sci font-black text-white text-5xl md:text-7xl">OUR <span
+                    class="bg-clip-text bg-gradient-to-r from-cyber-blue to-cyber-purple text-transparent">EVENTS</span>
             </h1>
-
-            <p class="mb-8 font-sci text-gray-400 text-xl md:text-3xl uppercase tracking-[0.2em]">
-                Grab <span class="text-cyber-purple">Beyond</span> The Infinity
+            <p class="mx-auto max-w-2xl font-body text-gray-400 text-lg">
+                Tracking all active operations, upcoming launches, and archived achievements of the Rajuk College
+                Science Club.
             </p>
+        </div>
 
-            <!-- New Natural Description -->
-            <p class="mx-auto mb-10 max-w-3xl font-body text-gray-300 text-lg md:text-xl leading-relaxed">
-                We are a community of young scientists, engineers, and dreamers from <span
-                    class="font-semibold text-white">Rajuk Uttara Model College</span> — exploring the frontiers of
-                science, technology, and innovation. From robotics to research, we transform ideas into action and
-                curiosity into creation.
-            </p>
-
-            <div class="flex sm:flex-row flex-col justify-center gap-4">
-                <a href="#events"
-                    class="group bg-cyber-blue/10 hover:bg-cyber-blue px-8 py-3 border border-cyber-blue rounded-sm font-sci text-cyber-blue hover:text-black transition-all interactive-element">
-                    View Activities <i data-lucide="arrow-right"
-                        class="inline ml-2 w-4 h-4 transition-transform group-hover:translate-x-1"></i>
-                </a>
-                <a href="#admin"
-                    class="hover:bg-white/10 px-8 py-3 border border-white/20 rounded-sm font-sci text-white transition-all interactive-element">
-                    Meet the Team
-                </a>
-            </div>
+        <!-- Decorative Background Element -->
+        <div
+            class="top-1/2 left-1/2 -z-10 absolute border border-white/5 rounded-full w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 animate-spin-slow pointer-events-none">
         </div>
     </section>
 
-    <!-- Leadership / Administration -->
-    <section id="admin" class="relative py-24">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div class="flex justify-between items-end mb-16 pb-4 border-white/10 border-b reveal">
-                <div>
-                    <h2 class="font-sci font-bold text-white text-3xl md:text-4xl">CLUB <span
-                            class="text-cyber-blue">LEADERSHIP</span></h2>
-                    <p class="mt-2 font-body text-gray-400">The mentors guiding our journey.</p>
+    <!-- Featured Event (Countdown) -->
+    <section class="px-4 pb-20">
+        <div class="mx-auto max-w-6xl">
+            <div class="group relative bg-black/40 p-8 md:p-12 border border-cyber-blue/30 rounded-xl overflow-hidden sci-fi-box reveal interactive-element"
+                style="--accent-color: #00f3ff;">
+                <!-- Background pulse -->
+                <div
+                    class="-top-20 -right-20 absolute bg-cyber-blue/20 group-hover:bg-cyber-blue/30 blur-[100px] w-64 h-64 transition-all">
                 </div>
-                <div class="hidden md:block">
-                    <i data-lucide="shield" class="opacity-50 w-8 h-8 text-cyber-blue"></i>
-                </div>
-            </div>
 
-            <!-- Principal -->
-            <div class="flex justify-center mb-20 reveal">
-                <div class="group relative w-full max-w-lg interactive-element">
-                    <!-- Glow Effect -->
-                    <div
-                        class="absolute -inset-0.5 bg-gradient-to-r from-gold-accent via-transparent to-gold-accent opacity-30 group-hover:opacity-60 rounded-xl transition-opacity blur">
-                    </div>
-
-                    <div class="relative bg-[#0c0c14] p-8 border border-gold-accent/30 rounded-xl text-center">
-                        <div class="mx-auto mb-6 p-1 border-2 border-gold-accent rounded-full size-28">
-                            <div class="relative bg-gray-800 rounded-full w-full h-full overflow-hidden">
-                                <!-- Placeholder for Principal Image -->
-                                <i data-lucide="user"
-                                    class="top-1/2 left-1/2 absolute w-10 h-10 text-gray-500 -translate-x-1/2 -translate-y-1/2 transform"></i>
-                            </div>
+                <div class="z-10 relative items-center gap-12 grid md:grid-cols-2">
+                    <div>
+                        <div
+                            class="inline-block bg-cyber-blue/10 mb-4 px-3 py-1 border border-cyber-blue rounded font-sci font-bold text-cyber-blue text-xs tracking-wider">
+                            NEXT MAJOR EVENT
                         </div>
-
-                        <h3 class="font-sci font-bold text-white text-2xl">Brig. Gen. Saiful Haque Ahmed, NDC, PSC</h3>
-                        <p class="mt-2 font-sci text-gold-accent text-sm uppercase tracking-wider">Principal</p>
-                        <p class="mt-4 font-body text-gray-400 text-sm italic">
-                            "Empowering the next generation of scientific minds."
+                        <h2
+                            class="mb-4 font-sci font-bold text-white group-hover:text-cyber-blue text-4xl md:text-5xl transition-colors">
+                            SCIENCE CARNIVAL 2025</h2>
+                        <p class="mb-6 text-gray-300 leading-relaxed">
+                            The annual convergence of young minds. Prepare your prototypes for the biggest innovation
+                            showcase of the year. Categories: Robotics, Physics, IT, and Biology.
                         </p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Moderators -->
-            <div class="gap-6 grid md:grid-cols-3">
-                <!-- Moderator 1 -->
-                <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element">
-                    <div class="flex justify-between items-start mb-4">
-                        <div
-                            class="flex justify-center items-center bg-gray-800 border border-white/10 rounded-lg size-16">
-                            <i data-lucide="user" class="size-8 text-cyber-blue"></i>
+                        <div class="flex flex-wrap gap-4 mb-8">
+                            <div class="flex items-center gap-2 font-sci text-gray-400 text-sm">
+                                <i data-lucide="map-pin" class="text-cyber-purple"></i> College Grounds
+                            </div>
+                            <div class="flex items-center gap-2 font-sci text-gray-400 text-sm">
+                                <i data-lucide="clock" class="text-cyber-purple"></i> 09:00 - 17:00
+                            </div>
                         </div>
-                        <span class="bg-cyber-blue/20 px-2 py-1 rounded font-sci text-cyber-blue text-sm">Officer in
-                            Charge (OIC)</span>
-                    </div>
-                    <h4 class="font-sci text-white group-hover:text-cyber-blue text-lg transition-colors">Md. Shahjalal
-                    </h4>
-                    <p class="mt-1 font-body text-gray-500 text-base">Associate Professor of Zoology</p>
-                </div>
 
-                <!-- Moderator 2 -->
-                <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element">
-                    <div class="flex justify-between items-start mb-4">
-                        <div
-                            class="flex justify-center items-center bg-gray-800 border border-white/10 rounded-lg size-16">
-                            <i data-lucide="user" class="w-6 h-6 text-cyber-purple"></i>
-                        </div>
-                        <span
-                            class="bg-cyber-purple/20 px-2 py-1 rounded font-sci text-cyber-purple text-sm">Moderator</span>
+                        <button
+                            class="flex items-center gap-2 bg-cyber-blue hover:bg-white hover:shadow-[0_0_20px_rgba(0,243,255,0.5)] px-8 py-3 rounded-sm font-sci font-bold text-black transition-all">
+                            REGISTER PROJECT <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </button>
                     </div>
-                    <h4 class="font-sci text-white group-hover:text-cyber-purple text-lg transition-colors">Faculty
-                        Member 2</h4>
-                    <p class="mt-1 font-body text-gray-500 text-base">Moderator</p>
-                </div>
 
-                <!-- Moderator 3 -->
-                <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element">
-                    <div class="flex justify-between items-start mb-4">
-                        <div
-                            class="flex justify-center items-center bg-gray-800 border border-white/10 rounded-lg size-16">
-                            <i data-lucide="user" class="w-6 h-6 text-green-400"></i>
+                    <!-- Countdown -->
+                    <div class="flex flex-col justify-center items-center">
+                        <div class="gap-4 grid grid-cols-4 w-full text-center">
+                            <div class="bg-deep-space p-4 border border-white/10 rounded-lg">
+                                <span class="block font-sci text-white text-3xl md:text-4xl" id="days">00</span>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Days</span>
+                            </div>
+                            <div class="bg-deep-space p-4 border border-white/10 rounded-lg">
+                                <span class="block font-sci text-white text-3xl md:text-4xl" id="hours">00</span>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Hours</span>
+                            </div>
+                            <div class="bg-deep-space p-4 border border-white/10 rounded-lg">
+                                <span class="block font-sci text-white text-3xl md:text-4xl" id="minutes">00</span>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Mins</span>
+                            </div>
+                            <div class="bg-deep-space p-4 border border-white/10 rounded-lg">
+                                <span class="block font-sci text-cyber-blue text-3xl md:text-4xl animate-pulse"
+                                    id="seconds">00</span>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Secs</span>
+                            </div>
                         </div>
-                        <span class="bg-green-500/20 px-2 py-1 rounded font-sci text-green-400 text-sm">BIOLOGY</span>
+                        <p class="mt-6 font-mono text-gray-500 text-xs">T-MINUS TO LAUNCH</p>
                     </div>
-                    <h4 class="font-sci text-white group-hover:text-green-400 text-lg transition-colors">Faculty Member
-                        3</h4>
-                    <p class="mt-1 font-body text-gray-500 text-base">Moderator</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Events (Timeline) -->
-    <section id="events" class="bg-gradient-to-b from-transparent to-black/50 py-24">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div class="mb-16 text-center reveal">
-                <h2 class="font-sci font-bold text-white text-3xl md:text-4xl">CLUB <span
-                        class="text-cyber-purple">ACTIVITIES</span></h2>
-                <p class="mt-2 font-body text-gray-400">Our journey through time.</p>
+    <!-- Upcoming List -->
+    <section class="mx-auto px-4 py-16 max-w-7xl">
+        <div class="flex items-center gap-4 mb-12 reveal">
+            <h3 class="font-sci text-white text-2xl">UPCOMING <span class="text-cyber-purple">EVENTS</span></h3>
+            <div class="flex-grow bg-white/10 h-px"></div>
+        </div>
+
+        <div class="gap-6 grid md:grid-cols-3">
+            <!-- Card 1 -->
+            <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element"
+                style="--accent-color: #bc13fe;">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-cyber-purple/10 p-3 border border-cyber-purple/30 rounded">
+                        <i data-lucide="telescope" class="w-6 h-6 text-cyber-purple"></i>
+                    </div>
+                    <span class="font-mono text-gray-500 text-xs">NOV 02</span>
+                </div>
+                <h4 class="mb-2 font-sci text-white group-hover:text-cyber-purple text-lg transition-colors">Astro Night
+                    Camp</h4>
+                <p class="mb-4 text-gray-400 text-sm">Observation of Jupiter and Saturn. Telescope setup training
+                    included.</p>
+                <a href="#"
+                    class="flex items-center gap-1 hover:gap-2 font-sci text-cyber-purple text-xs transition-all">
+                    DETAILS <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </a>
             </div>
 
-            <div class="gap-16 grid lg:grid-cols-2">
-
-                <!-- Upcoming -->
-                <div class="reveal">
-                    <h3 class="flex items-center gap-2 mb-8 font-sci text-cyber-blue text-xl">
-                        <i data-lucide="calendar-clock" class="w-5 h-5"></i> UPCOMING EVENTS
-                    </h3>
-
-                    <div class="space-y-6">
-                        <!-- Active Event Card -->
-                        <div
-                            class="group relative hover:bg-cyber-blue/20 bg-gradient-to-r from-cyber-blue/10 to-transparent p-6 border-cyber-blue border-l-4 rounded-r-lg transition-all interactive-element">
-                            <div class="top-2 right-2 absolute">
-                                <span
-                                    class="bg-cyber-blue px-2 py-1 rounded font-sci font-bold text-[10px] text-black animate-pulse">
-                                    REGISTRATION LIVE
-                                </span>
-                            </div>
-                            <span class="block mb-2 font-mono text-cyber-blue text-xs">DATE: OCT 15, 2025</span>
-                            <h4
-                                class="mb-2 font-sci font-bold text-white group-hover:text-cyber-blue text-xl transition-colors">
-                                RCSC
-                                Science Carnival 2025</h4>
-                            <p class="mb-4 text-gray-400 text-sm">The sector's largest gathering of innovators. Project
-                                submission channels
-                                are open.</p>
-                            <button
-                                class="flex items-center gap-2 hover:gap-4 font-sci text-cyber-blue text-xs transition-all">
-                                INITIATE REGISTRATION <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                            </button>
-                        </div>
-
-                        <!-- Pending Event Card -->
-                        <div
-                            class="relative bg-white/5 hover:bg-white/10 p-6 border-gray-600 hover:border-cyber-purple border-l-4 rounded-r-lg transition-all interactive-element">
-                            <span class="block mb-2 font-mono text-cyber-purple text-xs">DATE: NOV 02, 2025</span>
-                            <h4 class="mb-2 font-sci font-bold text-white text-xl">Astro-Observation Night</h4>
-                            <p class="text-gray-400 text-sm">Telescope alignment scheduled. Subject to atmospheric
-                                conditions.</p>
-                        </div>
+            <!-- Card 2 -->
+            <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element"
+                style="--accent-color: #00ff9d;">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-green-500/10 p-3 border border-green-500/30 rounded">
+                        <i data-lucide="cpu" class="w-6 h-6 text-green-400"></i>
                     </div>
+                    <span class="font-mono text-gray-500 text-xs">NOV 15</span>
                 </div>
+                <h4 class="mb-2 font-sci text-white group-hover:text-green-400 text-lg transition-colors">Arduino
+                    Workshop</h4>
+                <p class="mb-4 text-gray-400 text-sm">Beginner level robotics. Learn to code sensors and motors.</p>
+                <a href="#" class="flex items-center gap-1 hover:gap-2 font-sci text-green-400 text-xs transition-all">
+                    DETAILS <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </a>
+            </div>
 
-                <!-- Past -->
-                <div class="delay-100 reveal">
-                    <h3 class="flex items-center gap-2 mb-8 font-sci text-gray-400 text-2xl">
-                        <i data-lucide="history" class="w-5 h-5"></i>PAST <span class="text-gray-600">ACTIVITIES</span>
-                    </h3>
-
-                    <div class="relative space-y-6">
-                        <!-- Vertical Line -->
-                        <div class="top-0 bottom-0 left-4 absolute bg-white/10 w-px"></div>
-
-                        <!-- Past Event Item -->
-                        <div
-                            class="group relative opacity-70 hover:opacity-100 pl-12 transition-opacity interactive-element">
-                            <div
-                                class="top-2 left-[13px] absolute bg-gray-600 group-hover:bg-white border border-black rounded-full w-2 h-2 transition-colors">
-                            </div>
-                            <span class="block mb-1 font-mono text-gray-500 text-xs">FEB 2025</span>
-                            <h4 class="font-sci font-bold text-white text-lg">Intra-College Math Olympiad</h4>
-                            <p class="text-gray-500 text-sm">Mission Status: COMPLETED. 400+ cadets participated.</p>
-                        </div>
-
-                        <!-- Past Event Item -->
-                        <div
-                            class="group relative opacity-70 hover:opacity-100 pl-12 transition-opacity interactive-element">
-                            <div
-                                class="top-2 left-[13px] absolute bg-gray-600 group-hover:bg-white border border-black rounded-full w-2 h-2 transition-colors">
-                            </div>
-                            <span class="block mb-1 font-mono text-gray-500 text-xs">OCT 2024</span>
-                            <h4 class="font-sci font-bold text-white text-lg">National Science Fest 2024</h4>
-                            <p class="text-gray-500 text-sm">Mission Status: SUCCESS. RCSC secured 5 championship
-                                titles.</p>
-                        </div>
-
-                        <!-- Past Event Item -->
-                        <div
-                            class="group relative opacity-70 hover:opacity-100 pl-12 transition-opacity interactive-element">
-                            <div
-                                class="top-2 left-[13px] absolute bg-gray-600 group-hover:bg-white border border-black rounded-full w-2 h-2 transition-colors">
-                            </div>
-                            <span class="block mb-1 font-mono text-gray-500 text-xs">JUL 2024</span>
-                            <h4 class="font-sci font-bold text-white text-lg">Workshop: AI & Neural Networks</h4>
-                            <p class="text-gray-500 text-sm">Mission Status: DATA UPLOADED. Guest Speaker: Dr. A.
-                                Rahman.</p>
-                        </div>
+            <!-- Card 3 -->
+            <div class="group hover:bg-white/5 p-6 transition-all reveal sci-fi-box interactive-element"
+                style="--accent-color: #ff2a2a;">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-red-500/10 p-3 border border-red-500/30 rounded">
+                        <i data-lucide="flame" class="w-6 h-6 text-red-500"></i>
                     </div>
+                    <span class="font-mono text-gray-500 text-xs">DEC 05</span>
+                </div>
+                <h4 class="mb-2 font-sci text-white group-hover:text-red-500 text-lg transition-colors">Winter Science
+                    Fest</h4>
+                <p class="mb-4 text-gray-400 text-sm">Inter-college quiz competition and project display.</p>
+                <a href="#" class="flex items-center gap-1 hover:gap-2 font-sci text-red-500 text-xs transition-all">
+                    DETAILS <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Archive (Past Events) -->
+    <section class="mx-auto px-4 py-16 max-w-7xl">
+        <div class="flex items-center gap-4 mb-12 reveal">
+            <h3 class="font-sci text-gray-400 text-2xl">PAST <span class="text-gray-600">ACTIVITIES</span></h3>
+            <div class="flex-grow bg-white/10 h-px"></div>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Archive Item -->
+            <div
+                class="group flex md:flex-row flex-col md:items-center gap-4 hover:bg-white/5 p-4 border border-white/5 rounded-lg transition-all reveal interactive-element">
+                <div class="w-24 font-mono text-gray-500 text-xs">OCT 2024</div>
+                <div class="flex-1">
+                    <h4 class="font-sci text-white group-hover:text-cyber-blue text-lg transition-colors">National
+                        Science Fest 2024</h4>
+                    <p class="text-gray-500 text-sm">Secured 5 championship titles.</p>
+                </div>
+                <div>
+                    <span
+                        class="bg-green-500/20 px-2 py-1 border border-green-500/30 rounded font-sci text-[10px] text-green-400">MISSION
+                        SUCCESS</span>
+                </div>
+            </div>
+
+            <!-- Archive Item -->
+            <div
+                class="group flex md:flex-row flex-col md:items-center gap-4 hover:bg-white/5 p-4 border border-white/5 rounded-lg transition-all reveal interactive-element">
+                <div class="w-24 font-mono text-gray-500 text-xs">JUL 2024</div>
+                <div class="flex-1">
+                    <h4 class="font-sci text-white group-hover:text-cyber-purple text-lg transition-colors">AI & Neural
+                        Networks Workshop</h4>
+                    <p class="text-gray-500 text-sm">Conducted by Alumni Experts.</p>
+                </div>
+                <div>
+                    <span
+                        class="bg-blue-500/20 px-2 py-1 border border-blue-500/30 rounded font-sci text-[10px] text-blue-400">DATA
+                        ARCHIVED</span>
+                </div>
+            </div>
+
+            <!-- Archive Item -->
+            <div
+                class="group flex md:flex-row flex-col md:items-center gap-4 hover:bg-white/5 p-4 border border-white/5 rounded-lg transition-all reveal interactive-element">
+                <div class="w-24 font-mono text-gray-500 text-xs">FEB 2024</div>
+                <div class="flex-1">
+                    <h4 class="font-sci text-white group-hover:text-gold-accent text-lg transition-colors">Intra-College
+                        Math Olympiad</h4>
+                    <p class="text-gray-500 text-sm">400+ Participants.</p>
+                </div>
+                <div>
+                    <span
+                        class="bg-green-500/20 px-2 py-1 border border-green-500/30 rounded font-sci text-[10px] text-green-400">MISSION
+                        SUCCESS</span>
                 </div>
             </div>
         </div>
@@ -490,6 +453,37 @@
     <!-- Scripts -->
     <script>
         lucide.createIcons();
+
+        // --- COUNTDOWN TIMER ---
+        const targetDate = new Date("Oct 15, 2025 09:00:00").getTime();
+
+        const countdown = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // Check if expired BEFORE doing the math
+            if (distance < 0) {
+                clearInterval(countdown);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                // Optional: Change the "T-MINUS" text to "LIFTOFF"
+                document.querySelector(".font-mono.text-xs").innerText = "MISSION LAUNCHED";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+
 
         // --- MAGNETIC FIELD (Vector Grid) ---
         const canvas = document.getElementById('magnetic-field');
@@ -663,7 +657,6 @@
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
-
     </script>
 </body>
 
