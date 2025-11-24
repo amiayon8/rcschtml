@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rajuk College Science Club | RCSC</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sci': ['"Orbitron"', 'sans-serif'],
+                        'body': ['"Exo 2"', 'sans-serif'],
+                    },
+                    colors: {
+                        'cyber-blue': '#00f3ff',
+                        'cyber-purple': '#bc13fe',
+                        'void-black': '#050505',
+                        'deep-space': '#0a0a12',
+                        'hologram-green': '#00ff9d',
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor active */
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot,
+        .cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00f3ff;
+            box-shadow: 0 0 10px #00f3ff;
+        }
+
+        .cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+        }
+
+        /* Active state (hovering links) */
+        body.hovering .cursor-ring {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(188, 19, 254, 0.1);
+            border-color: #bc13fe;
+            mix-blend-mode: screen;
+        }
+        
+        /* Clicking state */
+        body.clicking .cursor-ring {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        /* --- UTILITIES --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glitch Effect */
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8;
+        }
+        .glitch::before {
+            left: 2px; text-shadow: -1px 0 #bc13fe;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px; text-shadow: -1px 0 #00f3ff;
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(14px, 9999px, 127px, 0); }
+            20% { clip: rect(66px, 9999px, 5px, 0); }
+            100% { clip: rect(12px, 9999px, 103px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(129px, 9999px, 36px, 0); }
+            20% { clip: rect(32px, 9999px, 4px, 0); }
+            100% { clip: rect(55px, 9999px, 23px, 0); }
+        }
+
+        .sci-fi-border {
+            position: relative;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+        .sci-fi-border::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, #00f3ff, transparent, #bc13fe);
+            z-index: -1;
+            margin: -1px;
+            clip-path: inherit;
+        }
+
+        /* Profile Hexagon Clip */
+        .hex-clip {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        /* Canvas Layer */
+        #magnetic-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0a12 0%, #000000 100%);
+        }
+    </style>
+</head>
+<body class="font-body antialiased selection:bg-cyber-blue selection:text-void-black">
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- Interactive Background -->
+    <canvas id="magnetic-field"></canvas>
+    
+    <!-- Navbar -->
+    <nav class="fixed w-full z-40 top-0 transition-all duration-300 backdrop-blur-md border-b border-white/5" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer group interactive-element" onclick="window.scrollTo(0,0)">
+                    <div class="relative">
+                        <i data-lucide="atom" class="h-8 w-8 text-cyber-blue animate-spin-slow group-hover:text-cyber-purple transition-colors duration-300 relative z-10"></i>
+                        <div class="absolute inset-0 bg-cyber-blue blur-md opacity-20 group-hover:opacity-50 transition-opacity"></div>
+                    </div>
+                    <span class="font-sci font-bold text-2xl tracking-wider text-white group-hover:text-cyber-blue transition-colors">RCSC</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="#home" class="font-sci text-xs hover:text-cyber-blue transition-colors px-2 py-2 interactive-element opacity-80 hover:opacity-100">HOME</a>
+                        <a href="#admin" class="font-sci text-xs hover:text-cyber-blue transition-colors px-2 py-2 interactive-element opacity-80 hover:opacity-100">COMMAND DECK</a>
+                        <a href="#wings" class="font-sci text-xs hover:text-cyber-blue transition-colors px-2 py-2 interactive-element opacity-80 hover:opacity-100">SECTORS</a>
+                        <a href="#events" class="font-sci text-xs hover:text-cyber-blue transition-colors px-2 py-2 interactive-element opacity-80 hover:opacity-100">MISSION LOG</a>
+                        <a href="#contact" class="interactive-element border border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue hover:bg-cyber-blue/10 px-4 py-2 rounded-sm font-sci text-xs transition-all duration-300">
+                            CONTACT
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="lg:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-cyber-blue p-2 interactive-element">
+                        <i data-lucide="menu" class="h-8 w-8"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-void-black/95 backdrop-blur-xl border-b border-cyber-blue/30">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-300 hover:text-cyber-blue block px-3 py-2 font-sci text-sm">HOME</a>
+                <a href="#admin" class="text-gray-300 hover:text-cyber-blue block px-3 py-2 font-sci text-sm">COMMAND DECK</a>
+                <a href="#wings" class="text-gray-300 hover:text-cyber-blue block px-3 py-2 font-sci text-sm">SECTORS</a>
+                <a href="#events" class="text-gray-300 hover:text-cyber-blue block px-3 py-2 font-sci text-sm">MISSION LOG</a>
+                <a href="#contact" class="text-cyber-blue block px-3 py-2 font-sci text-sm font-bold">CONTACT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="text-center px-4 z-10 max-w-5xl mx-auto reveal active">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyber-purple/30 bg-cyber-purple/10 text-cyber-purple mb-6 animate-pulse-fast">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-purple opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-purple"></span>
+                </span>
+                <span class="text-xs font-sci tracking-widest">SYSTEM ONLINE // 2025.1</span>
+            </div>
+            
+            <h1 class="font-sci text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyber-blue to-white mb-4 glitch" data-text="RAJUK COLLEGE SCIENCE CLUB">
+                RAJUK COLLEGE<br>SCIENCE CLUB
+            </h1>
+            
+            <p class="font-sci text-xl md:text-3xl text-gray-400 tracking-[0.2em] mb-8 uppercase">
+                Grab <span class="text-cyber-purple">Beyond</span> The Infinity
+            </p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center mt-8">
+                <a href="#events" class="interactive-element group relative px-8 py-4 bg-transparent overflow-hidden sci-fi-border">
+                    <div class="absolute inset-0 w-3 bg-cyber-blue transition-all duration-[250ms] ease-out group-hover:w-full opacity-20"></div>
+                    <span class="relative text-cyber-blue group-hover:text-white font-sci tracking-wider font-bold flex items-center gap-2">
+                        LATEST INTEL <i data-lucide="radio" class="w-4 h-4"></i>
+                    </span>
+                </a>
+                <a href="#admin" class="interactive-element group relative px-8 py-4 bg-transparent overflow-hidden sci-fi-border">
+                    <div class="absolute inset-0 w-3 bg-cyber-purple transition-all duration-[250ms] ease-out group-hover:w-full opacity-20"></div>
+                    <span class="relative text-cyber-purple group-hover:text-white font-sci tracking-wider font-bold flex items-center gap-2">
+                        COMMAND DECK <i data-lucide="users" class="w-4 h-4"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin / Command Deck -->
+    <section id="admin" class="py-20 relative bg-void-black/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="font-sci text-cyber-blue tracking-widest text-sm uppercase">/// ADMINISTRATION</span>
+                <h2 class="font-sci text-4xl md:text-5xl font-bold text-white mt-2">COMMAND <span class="text-cyber-purple">DECK</span></h2>
+            </div>
+
+            <!-- Principal / Chief Commander -->
+            <div class="flex justify-center mb-16 reveal">
+                <div class="relative group interactive-element max-w-md w-full">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-yellow-500 via-transparent to-yellow-500 opacity-50 blur-sm rounded-xl group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative bg-deep-space border border-yellow-500/30 p-8 rounded-xl text-center overflow-hidden">
+                        <!-- Holographic Grid BG -->
+                        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-20"></div>
+                        
+                        <div class="w-32 h-32 mx-auto mb-4 bg-gray-800 hex-clip flex items-center justify-center border-2 border-yellow-500 relative">
+                            <i data-lucide="user" class="w-16 h-16 text-yellow-500/50"></i>
+                            <!-- Replace icon with <img> tag for real photo -->
+                        </div>
+                        
+                        <h3 class="font-sci text-2xl font-bold text-white">Brig. Gen. (Retd.) [Name]</h3>
+                        <p class="text-yellow-500 font-sci text-sm tracking-wider uppercase mt-1">Principal & Chief Patron</p>
+                        <div class="mt-4 border-t border-white/10 pt-4">
+                            <p class="text-gray-400 text-sm italic">"Guiding the fleet towards the event horizon."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moderators / Flight Directors -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Mod 1 -->
+                <div class="reveal relative group interactive-element">
+                    <div class="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-cyber-blue/50 transition-all">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 bg-gray-800 rounded-full border border-cyber-blue/30 flex items-center justify-center overflow-hidden">
+                                <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-sci text-lg text-white">Faculty Member 1</h4>
+                                <p class="text-cyber-blue text-xs font-sci uppercase">Senior Moderator</p>
+                            </div>
+                        </div>
+                        <div class="h-1 w-full bg-gray-800 rounded overflow-hidden">
+                            <div class="h-full bg-cyber-blue w-3/4"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 font-mono">ACCESS LEVEL: 5 // PHYSICS DEPT</p>
+                    </div>
+                </div>
+
+                <!-- Mod 2 -->
+                <div class="reveal relative group interactive-element">
+                    <div class="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-cyber-purple/50 transition-all">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 bg-gray-800 rounded-full border border-cyber-purple/30 flex items-center justify-center overflow-hidden">
+                                <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-sci text-lg text-white">Faculty Member 2</h4>
+                                <p class="text-cyber-purple text-xs font-sci uppercase">Moderator</p>
+                            </div>
+                        </div>
+                        <div class="h-1 w-full bg-gray-800 rounded overflow-hidden">
+                            <div class="h-full bg-cyber-purple w-3/4"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 font-mono">ACCESS LEVEL: 4 // CHEMISTRY DEPT</p>
+                    </div>
+                </div>
+
+                <!-- Mod 3 -->
+                <div class="reveal relative group interactive-element">
+                    <div class="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-hologram-green/50 transition-all">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 bg-gray-800 rounded-full border border-hologram-green/30 flex items-center justify-center overflow-hidden">
+                                <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-sci text-lg text-white">Faculty Member 3</h4>
+                                <p class="text-hologram-green text-xs font-sci uppercase">Moderator</p>
+                            </div>
+                        </div>
+                        <div class="h-1 w-full bg-gray-800 rounded overflow-hidden">
+                            <div class="h-full bg-hologram-green w-3/4"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 font-mono">ACCESS LEVEL: 4 // BIOLOGY DEPT</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Log (Events) -->
+    <section id="events" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="font-sci text-gray-500 tracking-widest text-sm uppercase">/// TIMELINE</span>
+                <h2 class="font-sci text-4xl md:text-5xl font-bold text-white mt-2">MISSION <span class="text-cyber-blue">LOGS</span></h2>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                
+                <!-- Upcoming Events -->
+                <div class="reveal">
+                    <div class="flex items-center gap-3 mb-8 border-b border-cyber-blue/30 pb-4">
+                        <div class="w-2 h-2 bg-cyber-blue rounded-full animate-pulse"></div>
+                        <h3 class="font-sci text-2xl text-white">INCOMING TRANSMISSIONS</h3>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Active Event Card -->
+                        <div class="relative bg-gradient-to-r from-cyber-blue/10 to-transparent border-l-4 border-cyber-blue p-6 rounded-r-lg hover:bg-cyber-blue/20 transition-all interactive-element group">
+                            <div class="absolute top-2 right-2">
+                                <span class="bg-cyber-blue text-black text-[10px] font-bold px-2 py-1 rounded font-sci animate-pulse">LIVE SIGNAL</span>
+                            </div>
+                            <span class="text-cyber-blue font-mono text-xs mb-2 block">DATE: OCT 15, 2025</span>
+                            <h4 class="text-xl font-bold text-white font-sci mb-2 group-hover:text-cyber-blue transition-colors">RCSC Science Carnival 2025</h4>
+                            <p class="text-gray-400 text-sm mb-4">The sector's largest gathering of innovators. Project submission channels are open.</p>
+                            <button class="text-cyber-blue text-xs font-sci flex items-center gap-2 hover:gap-4 transition-all">
+                                INITIATE REGISTRATION <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+
+                        <!-- Pending Event Card -->
+                        <div class="relative bg-white/5 border-l-4 border-gray-600 p-6 rounded-r-lg hover:border-cyber-purple hover:bg-white/10 transition-all interactive-element">
+                             <span class="text-cyber-purple font-mono text-xs mb-2 block">DATE: NOV 02, 2025</span>
+                            <h4 class="text-xl font-bold text-white font-sci mb-2">Astro-Observation Night</h4>
+                            <p class="text-gray-400 text-sm">Telescope alignment scheduled. Subject to atmospheric conditions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Events -->
+                <div class="reveal delay-200">
+                    <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+                        <i data-lucide="archive" class="text-gray-500 w-5 h-5"></i>
+                        <h3 class="font-sci text-2xl text-gray-400">DECRYPTED ARCHIVES</h3>
+                    </div>
+
+                    <div class="space-y-6 relative">
+                        <!-- Vertical Line -->
+                        <div class="absolute left-4 top-0 bottom-0 w-px bg-white/10"></div>
+
+                        <!-- Past Event Item -->
+                        <div class="pl-12 relative group interactive-element opacity-70 hover:opacity-100 transition-opacity">
+                            <div class="absolute left-[13px] top-2 w-2 h-2 bg-gray-600 rounded-full border border-black group-hover:bg-white transition-colors"></div>
+                            <span class="font-mono text-xs text-gray-500 block mb-1">FEB 2025</span>
+                            <h4 class="text-lg font-bold text-white font-sci">Intra-College Math Olympiad</h4>
+                            <p class="text-gray-500 text-sm">Mission Status: COMPLETED. 400+ cadets participated.</p>
+                        </div>
+
+                        <!-- Past Event Item -->
+                        <div class="pl-12 relative group interactive-element opacity-70 hover:opacity-100 transition-opacity">
+                            <div class="absolute left-[13px] top-2 w-2 h-2 bg-gray-600 rounded-full border border-black group-hover:bg-white transition-colors"></div>
+                            <span class="font-mono text-xs text-gray-500 block mb-1">OCT 2024</span>
+                            <h4 class="text-lg font-bold text-white font-sci">National Science Fest 2024</h4>
+                            <p class="text-gray-500 text-sm">Mission Status: SUCCESS. RCSC secured 5 championship titles.</p>
+                        </div>
+
+                        <!-- Past Event Item -->
+                        <div class="pl-12 relative group interactive-element opacity-70 hover:opacity-100 transition-opacity">
+                            <div class="absolute left-[13px] top-2 w-2 h-2 bg-gray-600 rounded-full border border-black group-hover:bg-white transition-colors"></div>
+                            <span class="font-mono text-xs text-gray-500 block mb-1">JUL 2024</span>
+                            <h4 class="text-lg font-bold text-white font-sci">Workshop: AI & Neural Networks</h4>
+                            <p class="text-gray-500 text-sm">Mission Status: DATA UPLOADED. Guest Speaker: Dr. A. Rahman.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Departments / Wings -->
+    <section id="wings" class="py-20 bg-black/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="font-sci text-cyber-purple tracking-widest text-sm uppercase">/// SECTORS</span>
+                <h2 class="font-sci text-4xl md:text-5xl font-bold text-white mt-2">ACTIVE <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-blue to-cyber-purple">DEPARTMENTS</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="reveal group relative p-1 rounded-xl overflow-hidden interactive-element">
+                    <div class="absolute inset-0 bg-deep-space border border-white/10 rounded-xl transition-colors group-hover:border-cyber-blue/50"></div>
+                    <div class="relative bg-white/5 p-8 h-full rounded-lg backdrop-blur-sm hover:bg-white/10 transition-all">
+                        <i data-lucide="atom" class="w-10 h-10 text-cyber-blue mb-4"></i>
+                        <h3 class="font-sci text-xl font-bold text-white mb-2">PHYSICS</h3>
+                        <p class="text-gray-400 text-sm">Quantum mechanics to relativity.</p>
+                    </div>
+                </div>
+                <div class="reveal group relative p-1 rounded-xl overflow-hidden interactive-element">
+                    <div class="absolute inset-0 bg-deep-space border border-white/10 rounded-xl transition-colors group-hover:border-green-400/50"></div>
+                    <div class="relative bg-white/5 p-8 h-full rounded-lg backdrop-blur-sm hover:bg-white/10 transition-all">
+                        <i data-lucide="dna" class="w-10 h-10 text-green-400 mb-4"></i>
+                        <h3 class="font-sci text-xl font-bold text-white mb-2">BIOLOGY</h3>
+                        <p class="text-gray-400 text-sm">Genetics and environmental systems.</p>
+                    </div>
+                </div>
+                <div class="reveal group relative p-1 rounded-xl overflow-hidden interactive-element">
+                    <div class="absolute inset-0 bg-deep-space border border-white/10 rounded-xl transition-colors group-hover:border-yellow-400/50"></div>
+                    <div class="relative bg-white/5 p-8 h-full rounded-lg backdrop-blur-sm hover:bg-white/10 transition-all">
+                        <i data-lucide="flask-round" class="w-10 h-10 text-yellow-400 mb-4"></i>
+                        <h3 class="font-sci text-xl font-bold text-white mb-2">CHEMISTRY</h3>
+                        <p class="text-gray-400 text-sm">Organic synthesis and reactions.</p>
+                    </div>
+                </div>
+                <div class="reveal group relative p-1 rounded-xl overflow-hidden interactive-element">
+                    <div class="absolute inset-0 bg-deep-space border border-white/10 rounded-xl transition-colors group-hover:border-cyber-purple/50"></div>
+                    <div class="relative bg-white/5 p-8 h-full rounded-lg backdrop-blur-sm hover:bg-white/10 transition-all">
+                        <i data-lucide="globe-2" class="w-10 h-10 text-cyber-purple mb-4"></i>
+                        <h3 class="font-sci text-xl font-bold text-white mb-2">ASTRONOMY</h3>
+                        <p class="text-gray-400 text-sm">Cosmology and astrophotography.</p>
+                    </div>
+                </div>
+                <div class="reveal group relative p-1 rounded-xl overflow-hidden interactive-element">
+                    <div class="absolute inset-0 bg-deep-space border border-white/10 rounded-xl transition-colors group-hover:border-red-500/50"></div>
+                    <div class="relative bg-white/5 p-8 h-full rounded-lg backdrop-blur-sm hover:bg-white/10 transition-all">
+                        <i data-lucide="terminal-square" class="w-10 h-10 text-red-500 mb-4"></i>
+                        <h3 class="font-sci text-xl font-bold text-white mb-2">IT & PROGRAMMING</h3>
+                        <p class="text-gray-400 text-sm">Coding, AI, and Cybersecurity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-white/10 py-12 reveal z-10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="atom" class="h-6 w-6 text-cyber-blue"></i>
+                        <span class="font-sci font-bold text-xl text-white">RCSC</span>
+                    </div>
+                    <p class="text-gray-500 text-sm max-w-sm">
+                        Igniting minds, exploring the cosmos, and grabbing beyond the infinity.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-sci text-white mb-4">LINKS</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li class="hover:text-cyber-blue cursor-pointer interactive-element">Home</li>
+                        <li class="hover:text-cyber-blue cursor-pointer interactive-element">Command Deck</li>
+                        <li class="hover:text-cyber-blue cursor-pointer interactive-element">Mission Log</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-sci text-white mb-4">SOCIAL</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-cyber-blue transition-colors interactive-element"><i data-lucide="facebook"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-cyber-purple transition-colors interactive-element"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors interactive-element"><i data-lucide="twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-sci">
+                <p>&copy; 2025 RCSC. SYSTEM NOMINAL.</p>
+                <p>DESIGNED BY RCSC IT WING</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // --- 1. MAGNETIC VECTOR FIELD BACKGROUND ---
+        const canvas = document.getElementById('magnetic-field');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let needles = [];
+        let mouse = { x: -1000, y: -1000 }; // Start off-screen
+        let clickPulse = { x: null, y: null, active: false, radius: 0 };
+
+        // Configuration
+        const spacing = 45; // Slightly larger spacing for cleaner look
+        const needleLength = 15;
+
+        class Needle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.angle = 0;
+                this.targetAngle = 0;
+                this.color = '#334155'; 
+                this.width = 1;
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+
+                this.targetAngle = Math.atan2(dy, dx);
+
+                let angleDiff = this.targetAngle - this.angle;
+                while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+                while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+                
+                this.angle += angleDiff * 0.1;
+
+                const maxDist = 250;
+                if (distance < maxDist) {
+                    const intensity = 1 - (distance / maxDist);
+                    this.color = `rgba(${100 + (155 * intensity)}, ${100 + (100 * intensity)}, 255, ${0.2 + (0.8 * intensity)})`;
+                    this.width = 1 + (2 * intensity);
+                } else {
+                    this.color = 'rgba(50, 60, 80, 0.3)';
+                    this.width = 1;
+                }
+
+                if (clickPulse.active) {
+                    const pdx = clickPulse.x - this.x;
+                    const pdy = clickPulse.y - this.y;
+                    const pDist = Math.sqrt(pdx*pdx + pdy*pdy);
+                    
+                    if (pDist > clickPulse.radius - 25 && pDist < clickPulse.radius + 25) {
+                        this.color = '#bc13fe';
+                        this.width = 3;
+                        this.angle += Math.PI;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(-this.width * 2, 0);
+                ctx.lineTo(needleLength, 0);
+                
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = this.width;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function initGrid() {
+            needles = [];
+            const cols = Math.ceil(width / spacing);
+            const rows = Math.ceil(height / spacing);
+
+            for (let i = 0; i <= cols; i++) {
+                for (let j = 0; j <= rows; j++) {
+                    needles.push(new Needle(i * spacing, j * spacing));
+                }
+            }
+        }
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initGrid();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            if (clickPulse.active) {
+                clickPulse.radius += 10;
+                if (clickPulse.radius > Math.max(width, height)) {
+                    clickPulse.active = false;
+                }
+            }
+
+            needles.forEach(needle => {
+                needle.update();
+                needle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        }, { passive: true });
+        
+        window.addEventListener('mousedown', (e) => {
+            clickPulse.x = e.clientX;
+            clickPulse.y = e.clientY;
+            clickPulse.radius = 0;
+            clickPulse.active = true;
+            document.body.classList.add('clicking');
+        });
+        window.addEventListener('mouseup', () => {
+            document.body.classList.remove('clicking');
+        });
+
+        resize();
+        animate();
+
+        // --- 2. CURSOR & UI LOGIC ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorRing = document.querySelector('.cursor-ring');
+        const interactives = document.querySelectorAll('.interactive-element');
+
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            cursorDot.style.left = `${x}px`;
+            cursorDot.style.top = `${y}px`;
+            cursorRing.style.left = `${x}px`;
+            cursorRing.style.top = `${y}px`;
+        });
+
+        interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // --- 3. SCROLL REVEAL ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const checkReveal = () => {
+            const trigger = window.innerHeight * 0.85;
+            revealElements.forEach(el => {
+                const top = el.getBoundingClientRect().top;
+                if (top < trigger) el.classList.add('active');
+            });
+        };
+        window.addEventListener('scroll', checkReveal);
+        checkReveal(); 
+        
+        // Mobile Menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+    </script>
+</body>
+</html>
